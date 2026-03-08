@@ -68,6 +68,9 @@
 
     <!-- 操作按钮 -->
     <div class="action-buttons">
+      <button class="btn btn-shuffle" @click="shuffleAgain">
+        🔀 换一批
+      </button>
       <button class="btn btn-unknown" @click="markUnknown" :disabled="!isFlipped">
         ❌ 不认识
       </button>
@@ -184,6 +187,10 @@ export default {
     initWordList() {
       // 使用 Fisher-Yates 算法随机打乱单词
       this.wordList = this.shuffleArray(wordLibrary);
+      
+      // 🔍 调试输出：打印随机后的单词顺序
+      console.log('🔀 随机后的单词列表:', this.wordList.map(w => w.word));
+      console.log('📝 原始词库顺序:', wordLibrary.map(w => w.word));
     },
     flipCard() {
       this.isFlipped = !this.isFlipped;
@@ -242,6 +249,15 @@ export default {
       this.isCompleted = false;
       this.currentIndex = 0;
       this.initWordList();
+    },
+    // 🔀 手动重新洗牌
+    shuffleAgain() {
+      this.initWordList();
+      this.currentIndex = 0;
+      this.isFlipped = false;
+      this.isKnown = false;
+      this.isUnknown = false;
+      alert('🔀 已重新随机单词顺序！\n\n按 F12 打开控制台可以看到详细列表哦～');
     }
   }
 };
@@ -469,7 +485,7 @@ body {
 /* 操作按钮 */
 .action-buttons {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   margin-bottom: 20px;
 }
 
@@ -487,6 +503,18 @@ body {
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-shuffle {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border: 2px dashed rgba(255,255,255,0.5);
+  flex: 0.8;
+}
+
+.btn-shuffle:hover {
+  background: rgba(255,255,255,0.3);
+  border-color: white;
 }
 
 .btn-unknown {
