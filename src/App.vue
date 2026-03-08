@@ -36,7 +36,12 @@
         <div class="card-inner">
           <!-- 正面 -->
           <div class="card-front">
-            <div class="word-text">{{ currentWord.word }}</div>
+            <div class="word-header">
+              <div class="word-text">{{ currentWord.word }}</div>
+              <button class="btn-speak" @click.stop="speakWord" title="播放发音">
+                🔊
+              </button>
+            </div>
             <div class="pronunciation">{{ currentWord.pronunciation }}</div>
             <div class="pos-tag">{{ currentWord.pos }}</div>
             <div class="hint-text">点击翻转查看释义</div>
@@ -137,6 +142,17 @@ export default {
     this.checkStreak();
   },
   methods: {
+    // 🔊 播放单词发音
+    speakWord() {
+      if (!this.currentWord.word) return;
+      
+      // 使用浏览器自带的 Web Speech API
+      const utterance = new SpeechSynthesisUtterance(this.currentWord.word);
+      utterance.lang = 'en-US'; // 美式发音
+      utterance.rate = 0.8; // 稍慢一点，更清晰
+      utterance.pitch = 1;
+      speechSynthesis.speak(utterance);
+    },
     loadStats() {
       const saved = localStorage.getItem('fishyWordsStats');
       if (saved) {
@@ -339,11 +355,41 @@ body {
   text-align: center;
 }
 
+.word-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 10px;
+}
+
 .word-text {
   font-size: 2.5em;
   font-weight: bold;
   color: #667eea;
-  margin-bottom: 10px;
+}
+
+.btn-speak {
+  background: #667eea;
+  border: none;
+  border-radius: 50%;
+  width: 45px;
+  height: 45px;
+  font-size: 1.3em;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-speak:hover {
+  background: #5568d3;
+  transform: scale(1.1);
+}
+
+.btn-speak:active {
+  transform: scale(0.95);
 }
 
 .pronunciation {
